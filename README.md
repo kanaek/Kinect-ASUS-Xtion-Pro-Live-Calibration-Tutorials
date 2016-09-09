@@ -39,6 +39,7 @@ A pinhole camera is a simple camera without a lens and with a single small apert
 ![](camera_calibration_focal_point.png)
 
 The pinhole camera parameters are represented in a 3-by-4 matrix called the camera matrix (or projection matrix). This matrix maps the 3-D world scene into the image plane. The calibration algorithm calculates the camera matrix using the extrinsic and intrinsic parameters. The extrinsic parameters represent the location of the camera in the 3-D scene. They represent a rigid transformation from 3-D world coordinate system to the 3-D camera's coordinate system. The intrinsic parameters represent the optical center and focal length of the camera. They represent a projective transformation from the 3-D camera's coordinates into the 2-D image coordinates.
+
 ![](calibration_coordinate_blocks.png)
 
 [latex]
