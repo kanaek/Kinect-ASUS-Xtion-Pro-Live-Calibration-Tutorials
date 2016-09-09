@@ -35,8 +35,12 @@ rosrun rviz rviz
 Camera can be modeled with a pinhole camera model and len distortion.
 #### Pinhole Model
 A pinhole camera is a simple camera without a lens and with a single small aperture. Light rays pass through the aperture and project an inverted image on the opposite side of the camera. Think of the virtual image plane as being in front of the camera and containing the upright image of the scene.
-<img src="http://bbs.slxrobot.com/wp-content/uploads/2016/09/camera_calibration_focal_point.png" alt="camera_calibration_focal_point" width="381" height="190" class="aligncenter size-full wp-image-1709" />
-The pinhole camera parameters are represented in a 3-by-4 matrix called the camera matrix (or projection matrix). This matrix maps the 3-D world scene into the image plane. The calibration algorithm calculates the camera matrix using the extrinsic and intrinsic parameters. The extrinsic parameters represent the location of the camera in the 3-D scene. They represent a rigid transformation from 3-D world coordinate system to the 3-D camera's coordinate system. The intrinsic parameters represent the optical center and focal length of the camera. They represent a projective transformation from the 3-D camera's coordinates into the 2-D image coordinates.<img src="http://bbs.slxrobot.com/wp-content/uploads/2016/09/calibration_coordinate_blocks.png" alt="calibration_coordinate_blocks" width="386" height="152" class="aligncenter size-full wp-image-1714" />
+
+![](camera_calibration_focal_point.png)
+
+The pinhole camera parameters are represented in a 3-by-4 matrix called the camera matrix (or projection matrix). This matrix maps the 3-D world scene into the image plane. The calibration algorithm calculates the camera matrix using the extrinsic and intrinsic parameters. The extrinsic parameters represent the location of the camera in the 3-D scene. They represent a rigid transformation from 3-D world coordinate system to the 3-D camera's coordinate system. The intrinsic parameters represent the optical center and focal length of the camera. They represent a projective transformation from the 3-D camera's coordinates into the 2-D image coordinates.
+![](calibration_coordinate_blocks.png)
+
 [latex]
 \begin{align}
 \lambda
@@ -93,7 +97,9 @@ R&T\\
 
 #### Distortion in Camera
 The camera matrix does not account for lens distortion because an ideal pinhole camera does not have a lens. To accurately represent a real camera, the camera model includes the radial and tangential lens distortion.
-<img src="http://bbs.slxrobot.com/wp-content/uploads/2016/09/calibration_radial_distortion.png" alt="calibration_radial_distortion" width="487" height="165" class="aligncenter size-full wp-image-1715" />
+
+![](calibration_radial_distortion.png)
+
 We need to takes into account the radial and tangential factors.
 For the radial factor one uses the following formula:
 [latex]\begin{equation}
@@ -121,7 +127,11 @@ rosrun camera_calibration cameracalibrator.py image:=/camera/rgb/image_raw camer
 Don't forget to Commit your successful calibration.
 
 #### IR(depth) Camera
-The speckle pattern makes it impossible to detect the checkerboard corners accurately in the IR image. The simplest solution is to cover the projector (lone opening on the far left) with one or two Post-it notes, mostly diffusing the speckles. An ideal solution is to block the projector completely and provide a separate IR light source. 
+The speckle pattern makes it impossible to detect the checkerboard corners accurately in the IR image. 
+
+![](speckles.png)
+
+The simplest solution is to cover the projector (lone opening on the far left) with one or two Post-it notes, mostly diffusing the speckles. An ideal solution is to block the projector completely and provide a separate IR light source. 
 ```bash
 rosrun camera_calibration cameracalibrator.py image:=/camera/ir/image_raw camera:=/camera/ir --size 8x6 --square 0.0245
 ```
