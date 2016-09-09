@@ -2,7 +2,7 @@
 # Kinect-ASUS-Xtion-Pro-Live-Calibration-Tutorials
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-
+![33](kienct calibration.pdf)
 ### Preparation
 #### Installation
 * Enter the following codes in your terminal
