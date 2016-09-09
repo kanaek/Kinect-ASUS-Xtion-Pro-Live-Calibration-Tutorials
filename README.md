@@ -32,4 +32,4 @@ roslaunch openni_launch openni.launch depth_registration:=true
 rosrun rviz rviz
 ```
 
-See `kienct calibration.pdf` to view the tutorial of how to calibrate kinect.
+See `kienct calibration.pdf` to view the tutorial of how to calibrate kinect. And note that these codes have been tested on OpenCV 2.4. 
