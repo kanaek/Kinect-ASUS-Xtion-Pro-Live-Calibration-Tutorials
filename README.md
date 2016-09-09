@@ -177,6 +177,56 @@ OpenCV provides a handy function named `solvePnPRansac` which can solve this pro
 
 **pose_estimation.py** is just a tiny program that will show you your current pose relative to the chessboard. It will show the world coordinate system with its three axises (x-axis, y-axis, and z-axis). As you move the chessboard, the axises move together and remain on the same position on the chessboard. 
 
+**One note here**:
+The extrinsic matrix [latex]
+\begin{align}\begin{bmatrix}
+R&T\\
+\end{bmatrix}
+\end{align}
+[/latex] describes how to transform points in world coordinates to camera coordinates.  The vector [latex] T[/latex] can be interpreted as the position of the world origin in camera coordinates, and the columns of [latex]R[/latex] represent the directions of the world-axes in camera coordinates. It describes how the world is transformed relative to the camera. This is often counter-intuitive, because we usually want to specify how the camera is transformed relative to the world. It's often more natural to specify the camera's pose directly rather than specifying how world points should transform to camera coordinates. Luckily, building an extrinsic camera matrix this way is easy: just build a rigid transformation matrix that describes the camera's pose and then take it's inverse.
+
+Let [latex]C[/latex] be a column vector describing the location of the camera-center in world coordinates, and let [latex]R_c[/latex] be the rotation matrix describing the camera's orientation with respect to the world coordinate axes. The transformation matrix that describes the camera's pose is then [latex]\begin{align}\begin{bmatrix}R_c & C\end{bmatrix}\end{align}[/latex]. Like before, we make the matrix square by adding an extra row of [latex]\begin{align}\begin{bmatrix}0& 0 & 0 & 1\end{bmatrix}\end{align}[/latex]. Then the extrinsic matrix is obtained by inverting the camera's pose matrix:
+ [latex]
+\begin{align}
+\begin{bmatrix}
+R & T\\
+0 & 1
+\end{bmatrix}& =\begin{bmatrix}
+R_c & C\\
+0 & 1
+\end{bmatrix}^{-1}\\
+& =\begin{bmatrix}
+\begin{bmatrix}
+I&C\\
+0&1\\
+\end{bmatrix}
+\begin{bmatrix}
+R_c&0\\
+0&1\\
+\end{bmatrix}
+\end{bmatrix}^{-1}\\
+&=\begin{bmatrix}
+R_c&0\\
+0&1\\
+\end{bmatrix}^{-1}
+\begin{bmatrix}
+I&C\\
+0&1\\
+\end{bmatrix}^{-1}\\
+&=\begin{bmatrix}
+R_c^{T}&0\\
+0&1\\
+\end{bmatrix}
+\begin{bmatrix}
+I&-C\\
+0&1\\
+\end{bmatrix}\\
+&=\begin{bmatrix}
+R_c^T&-R_c^TC\\
+0&1
+\end{bmatrix}
+\end{align}
+[/latex]
 
 ### Register Depth to RGB
 To get aligned depth image and rgb image, we need to register depth image to rgb image. The first thing we need to do is to get the transformation matrix between the ir(depth) camera and rgb camera. 
