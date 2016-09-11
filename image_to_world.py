@@ -14,12 +14,6 @@ from matplotlib import pyplot as plt
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 
-# The calibration result might have some constant offset
-x_offset = 0.018
-y_offset = -0.035
-z_offset = -0.008
-
-
 
 class map_img_to_world:
     def __init__(self):
@@ -138,9 +132,7 @@ class map_img_to_world:
         depth_pix_point = np.array([pix_point[0], pix_point[1], 1]) * self.depth_image[pix_point[1], pix_point[0]]
         depth_coord_point = np.dot(np.linalg.inv(self.depth_mtx), depth_pix_point.reshape(-1,1))
         point_in_world = np.dot(self.ir_to_world_rmat, depth_coord_point.reshape(-1,1)) + self.ir_to_world_tvec
-        point_in_world[0] += x_offset
-        point_in_world[1] += y_offset
-        point_in_world[2] += z_offset
+
         return point_in_world
 
     def get_center_point(self):
