@@ -14,6 +14,10 @@ from matplotlib import pyplot as plt
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 
+# The calibration result might have some constant offset
+x_offset = 0.018
+y_offset = -0.035
+z_offset = -0.008
 
 
 
@@ -134,6 +138,9 @@ class map_img_to_world:
         depth_pix_point = np.array([pix_point[0], pix_point[1], 1]) * self.depth_image[pix_point[1], pix_point[0]]
         depth_coord_point = np.dot(np.linalg.inv(self.depth_mtx), depth_pix_point.reshape(-1,1))
         point_in_world = np.dot(self.ir_to_world_rmat, depth_coord_point.reshape(-1,1)) + self.ir_to_world_tvec
+        point_in_world[0] += x_offset
+        point_in_world[1] += y_offset
+        point_in_world[2] += z_offset
         return point_in_world
 
     def get_center_point(self):
@@ -174,26 +181,16 @@ if __name__ == "__main__":
     ic = map_img_to_world()
     try:
         rate = rospy.Rate(50)
-        count = 0
-        x_coord = []
-        y_coord = []
         while not rospy.is_shutdown():
             if ic.rect_done:
                 point = ic.img_to_world(ic.get_center_point())
                 if point != None:
-                    x_coord.append(count)
-                    y_coord.append(point[1][0])
-                    count += 1
-                    if count > 1000:
-                        break
                     print "================================="
                     print "center point in world coordinate:"
                     print point
 
             rate.sleep()
-        print y_coord
-        plt.plot(x_coord,y_coord)
-        plt.show()
+
     except KeyboardInterrupt:
         print("Shutting down")
     cv2.destroyAllWindows()
