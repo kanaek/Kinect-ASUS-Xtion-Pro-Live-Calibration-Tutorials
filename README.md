@@ -11,7 +11,7 @@ sudo apt-get install ros-indigo-openni-camera
 sudo apt-get install ros-indigo-openni-launch
 ```
 
-#### if you are using Asus Xtion Pro Live:
+#### If you are using Asus Xtion Pro Live:
 Modify `GlobalDefaults.ini` 
 ```bash
 sudo gedit /etc/openni/GlobalDefaults.ini
