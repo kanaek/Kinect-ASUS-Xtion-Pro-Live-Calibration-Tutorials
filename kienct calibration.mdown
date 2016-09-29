@@ -13,13 +13,25 @@ sudo apt-get install ros-indigo-openni-camera
 sudo apt-get install ros-indigo-openni-launch
 ```
 
-* Remember to modify `GlobalDefaults.ini` if you are using Asus Xtion Pro Live
+#### If you are using Asus Xtion Pro Live:
+Modify `GlobalDefaults.ini` 
 ```bash
 sudo gedit /etc/openni/GlobalDefaults.ini
 ```
 then uncomment the line: `;UsbInterface=2` (just delete the `;` symbol)
 
-#### Test your Asus Xtion Pro Live with ROS
+#### If you are using kinect v1.0:
+```bash
+mkdir ~/kinectdriver 
+cd ~/kinectdriver 
+git clone https://github.com/avin2/SensorKinect 
+cd SensorKinect/Bin/
+tar xvjf SensorKinect093-Bin-Linux-x64-v5.1.2.1.tar.bz2
+cd Sensor-Bin-Linux-x64-v5.1.2.1/
+sudo ./install.sh
+```
+
+#### Test your Kinect(Asus Xtion Pro Live) with ROS
 
 * To view the rgb image:
 ```bash
