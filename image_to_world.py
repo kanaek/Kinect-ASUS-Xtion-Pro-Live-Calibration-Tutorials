@@ -14,6 +14,12 @@ from matplotlib import pyplot as plt
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 
+# The calibration result might have some constant offset
+x_offset = 0.0
+y_offset = -0.001
+z_offset = 0.001
+
+
 
 class map_img_to_world:
     def __init__(self):
@@ -107,18 +113,21 @@ class map_img_to_world:
        self.rgb_tvec = np.array(rgb_doc['tvec'])
        rgb_stream.close()
 
+       self.rgb_to_world_rmat = self.rgb_rmat.T
+       self.rgb_to_world_tvec = -np.dot(self.rgb_rmat.T, self.rgb_tvec)
+
        self.ir_to_world_rmat = self.ir_rmat.T
        self.ir_to_world_tvec = -np.dot(self.ir_rmat.T, self.ir_tvec)
 
 
     def load_intrinsics(self):
-    	depth_stream = open("/home/chentao/kinect_calibration/depth_1504270110.yaml", "r")
+    	depth_stream = open("/home/chentao/kinect_calibration/depth_0000000000000000.yaml", "r")
         depth_doc = yaml.load(depth_stream)
         self.depth_mtx = np.array(depth_doc['camera_matrix']['data']).reshape(3,3)
         self.depth_dist = np.array(depth_doc['distortion_coefficients']['data'])
         depth_stream.close()
 
-        rgb_stream = open("/home/chentao/kinect_calibration/rgb_1504270110.yaml", "r")
+        rgb_stream = open("/home/chentao/kinect_calibration/rgb_0000000000000000.yaml", "r")
         rgb_doc = yaml.load(rgb_stream)
         self.rgb_mtx = np.array(rgb_doc['camera_matrix']['data']).reshape(3,3)
         self.rgb_dist = np.array(rgb_doc['distortion_coefficients']['data'])
@@ -128,11 +137,21 @@ class map_img_to_world:
         if self.depth_image == None or self.rgb_image == None:
             return
 
-        # pix_point is (u,v) : the coordinates on the image
-        depth_pix_point = np.array([pix_point[0], pix_point[1], 1]) * self.depth_image[pix_point[1], pix_point[0]]
-        depth_coord_point = np.dot(np.linalg.inv(self.depth_mtx), depth_pix_point.reshape(-1,1))
-        point_in_world = np.dot(self.ir_to_world_rmat, depth_coord_point.reshape(-1,1)) + self.ir_to_world_tvec
+        # # pix_point is (u,v) : the coordinates on the image
+        # depth_pix_point = np.array([pix_point[0], pix_point[1], 1]) * self.depth_image[pix_point[1], pix_point[0]]
+        # depth_coord_point = np.dot(np.linalg.inv(self.depth_mtx), depth_pix_point.reshape(-1,1))
+        # point_in_world = np.dot(self.ir_to_world_rmat, depth_coord_point.reshape(-1,1)) + self.ir_to_world_tvec
+        # point_in_world[0] += x_offset
+        # point_in_world[1] += y_offset
+        # point_in_world[2] += z_offset
 
+        depth_pix_point = np.array([pix_point[0], pix_point[1], 1]) * self.depth_image[pix_point[1], pix_point[0]]
+        depth_coord_point = np.dot(np.linalg.inv(self.rgb_mtx), depth_pix_point.reshape(-1,1))
+
+        point_in_world = np.dot(self.rgb_to_world_rmat, depth_coord_point.reshape(-1,1)) + self.rgb_to_world_tvec
+        point_in_world[0] += x_offset
+        point_in_world[1] += y_offset
+        point_in_world[2] += z_offset
         return point_in_world
 
     def get_center_point(self):
